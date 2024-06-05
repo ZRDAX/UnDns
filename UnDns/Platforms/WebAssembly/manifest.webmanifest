@@ -1,0 +1,10 @@
+{
+  "background_color": "#ffffff",
+  "description": "UnDns",
+  "display": "standalone",
+  "name": "UnDns",
+  "short_name": "UnDns",
+  "start_url": "/index.html",
+  "theme_color": "#ffffff",
+  "scope": "/"
+}

@@ -1,0 +1,24 @@
+﻿<Page x:Class="UnDns.Presentation.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:UnDns.Presentation"
+      xmlns:uen="using:Uno.Extensions.Navigation.UI"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      NavigationCacheMode="Required"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="DNS Data" FontSize="24" Margin="10" FontWeight="Bold"/>
+            <TextBlock Text="Total Dados:" FontSize="18" Margin="10"/>
+            <TextBlock Name="TotalDadosTextBlock" FontSize="18" Margin="10"/>
+            <TextBlock Text="Número de Pacotes:" FontSize="18" Margin="10"/>
+            <TextBlock Name="NumPacotesTextBlock" FontSize="18" Margin="10"/>
+            <TextBlock Text="Média de Dados:" FontSize="18" Margin="10"/>
+            <TextBlock Name="MediaDadosTextBlock" FontSize="18" Margin="10"/>
+        </StackPanel>
+    </Grid>
+    
+</Page>
