@@ -1,5 +1,3 @@
-# Arquivo: server.py
-
 from flask import Flask, jsonify
 from threading import Thread, Lock
 import time
@@ -11,10 +9,12 @@ app = Flask(__name__)
 # Variáveis para rastrear o total de dados e o número de pacotes capturados
 total_dados = 0
 num_pacotes = 0
+consultas_dns = []
+respostas_dns = []
 lock = Lock()
 
 def dns_sniffer(pkt):
-    global total_dados, num_pacotes
+    global total_dados, num_pacotes, consultas_dns, respostas_dns
     
     with lock:
         if pkt.haslayer(DNS):
@@ -27,9 +27,12 @@ def dns_sniffer(pkt):
 
             if pkt[DNS].qr == 0:  # Consulta DNS
                 domain_name = pkt[DNS].qd.qname.decode()  # Obtém o nome do domínio
+                consultas_dns.append({"src": pkt['IP'].src, "domain": domain_name, "size": tamanho_pacote})
                 print("Consulta DNS: %s -> %s, Tamanho do Pacote: %d bytes" % (pkt['IP'].src, domain_name, tamanho_pacote))
+                
             elif pkt[DNS].qr == 1:  # Resposta DNS
                 domain_name = pkt[DNS].qd.qname.decode()  # Obtém o nome do domínio
+                respostas_dns.append({"src": pkt['IP'].src, "domain": domain_name, "size": tamanho_pacote})
                 print("Resposta DNS: %s -> %s, Tamanho do Pacote: %d bytes" % (pkt['IP'].src, domain_name, tamanho_pacote))
 
 def start_sniffing():
@@ -42,7 +45,8 @@ def get_dns_data():
             media_dados = total_dados / num_pacotes
         else:
             media_dados = 0
-        return jsonify(total_dados=total_dados, num_pacotes=num_pacotes, media_dados=media_dados)
+        return jsonify(total_dados=total_dados, num_pacotes=num_pacotes, media_dados=media_dados,
+                    consultas_dns=consultas_dns, respostas_dns=respostas_dns)
 
 if __name__ == '__main__':
     thread_sniffer = Thread(target=start_sniffing)

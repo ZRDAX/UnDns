@@ -1,59 +1,77 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Diagnostics;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 namespace UnDns.Presentation;
-
-public sealed partial class MainPage : Page
+        public sealed partial class MainPage : Page
     {
-        private static readonly HttpClient client = new HttpClient();
-        private DispatcherTimer dispatcherTimer;
+        private static readonly HttpClient httpClient = new HttpClient();
 
         public MainPage()
         {
             this.InitializeComponent();
-            StartTimer();
+            FetchDataAsync();
         }
 
-        private void StartTimer()
-        {
-            dispatcherTimer = new DispatcherTimer();
-            dispatcherTimer.Tick += DispatcherTimer_Tick;
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 5); // Atualiza a cada 5 segundos
-            dispatcherTimer.Start();
-        }
-
-        private async void DispatcherTimer_Tick(object sender, object e)
-        {
-            await GetData();
-        }
-
-        private async Task GetData()
+        private async void FetchDataAsync()
         {
             try
             {
-                var response = await client.GetStringAsync("http://localhost:5000/dns_data");
-                var dnsData = JsonSerializer.Deserialize<DnsData>(response);
+                var response = await httpClient.GetStringAsync("http://localhost:5000/dns_data");
+                var dnsData = JsonSerializer.Deserialize<DNSData>(response);
 
-                TotalDadosTextBlock.Text = dnsData.TotalDados.ToString();
-                NumPacotesTextBlock.Text = dnsData.NumPacotes.ToString();
-                MediaDadosTextBlock.Text = dnsData.MediaDados.ToString("F2");
+                if (dnsData != null)
+                {
+                    TotalDataTextBlock.Text = $"Total de Dados: {dnsData.TotalDados} bytes";
+                    PacketCountTextBlock.Text = $"Número de Pacotes: {dnsData.NumPacotes}";
+                    AverageDataTextBlock.Text = $"Média de Dados: {dnsData.MediaDados} bytes";
+
+                    ConsultasListView.ItemsSource = dnsData.ConsultasDNS ?? new List<DNSInfo>();
+                    RespostasListView.ItemsSource = dnsData.RespostasDNS ?? new List<DNSInfo>();
+                }
+                else
+                {
+                    DisplayError("Dados de DNS não encontrados.");
+                }
             }
             catch (Exception ex)
             {
-                TotalDadosTextBlock.Text = "Error";
-                NumPacotesTextBlock.Text = "Error";
-                MediaDadosTextBlock.Text = ex.Message;
+                DisplayError($"Erro: {ex.Message}");
             }
+        }
+
+        private void DisplayError(string message)
+        {
+            TotalDataTextBlock.Text = message;
+            PacketCountTextBlock.Text = string.Empty;
+            AverageDataTextBlock.Text = string.Empty;
+            ConsultasListView.ItemsSource = null;
+            RespostasListView.ItemsSource = null;
+        }
+
+        private void OnRefreshDataButtonClick(object sender, RoutedEventArgs e)
+        {
+            FetchDataAsync();
         }
     }
 
-    public class DnsData
+    public class DNSData
     {
         public int TotalDados { get; set; }
         public int NumPacotes { get; set; }
         public double MediaDados { get; set; }
+        public List<DNSInfo> ConsultasDNS { get; set; } = new List<DNSInfo>();
+        public List<DNSInfo> RespostasDNS { get; set; } = new List<DNSInfo>();
+    }
+
+    public class DNSInfo
+    {
+        public string Src { get; set; } = string.Empty;
+        public string Domain { get; set; } = string.Empty;
+        public int Size { get; set; }
     }

@@ -7,18 +7,42 @@
       NavigationCacheMode="Required"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+      mc:Ignorable="d">
 
-     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <TextBlock Text="DNS Data" FontSize="24" Margin="10" FontWeight="Bold"/>
-            <TextBlock Text="Total Dados:" FontSize="18" Margin="10"/>
-            <TextBlock Name="TotalDadosTextBlock" FontSize="18" Margin="10"/>
-            <TextBlock Text="Número de Pacotes:" FontSize="18" Margin="10"/>
-            <TextBlock Name="NumPacotesTextBlock" FontSize="18" Margin="10"/>
-            <TextBlock Text="Média de Dados:" FontSize="18" Margin="10"/>
-            <TextBlock Name="MediaDadosTextBlock" FontSize="18" Margin="10"/>
+            <TextBlock x:Name="TotalDataTextBlock" FontSize="24" Margin="0,10"/>
+            <TextBlock x:Name="PacketCountTextBlock" FontSize="24" Margin="0,10"/>
+            <TextBlock x:Name="AverageDataTextBlock" FontSize="24" Margin="0,10"/>
+            
+            <Button Content="Atualizar Dados" Click="OnRefreshDataButtonClick" Margin="0,20"/>
+            
+            <TextBlock Text="Consultas DNS:" FontSize="18" Margin="0,10"/>
+            <ListView x:Name="ConsultasListView" Height="200">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Domain}" FontSize="16"/>
+                            <TextBlock Text="{Binding Src}" FontSize="14" Foreground="Gray"/>
+                            <TextBlock Text="{Binding Size}" FontSize="14" Foreground="Gray"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <TextBlock Text="Respostas DNS:" FontSize="18" Margin="0,10"/>
+            <ListView x:Name="RespostasListView" Height="200">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Domain}" FontSize="16"/>
+                            <TextBlock Text="{Binding Src}" FontSize="14" Foreground="Gray"/>
+                            <TextBlock Text="{Binding Size}" FontSize="14" Foreground="Gray"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </StackPanel>
     </Grid>
-    
 </Page>
