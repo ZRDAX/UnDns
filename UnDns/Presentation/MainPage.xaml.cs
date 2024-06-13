@@ -14,7 +14,7 @@ namespace UnDns.Presentation;
 
         public MainPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             FetchDataAsync();
         }
 
